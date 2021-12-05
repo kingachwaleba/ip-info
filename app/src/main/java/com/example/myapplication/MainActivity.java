@@ -3,12 +3,14 @@ package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,98 +24,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button button = findViewById(R.id.button);
-        EditText ip1 = findViewById(R.id.ip1);
-        EditText ip2 = findViewById(R.id.ip2);
-        EditText ip3 = findViewById(R.id.ip3);
-        EditText ip4 = findViewById(R.id.ip4);
 
-        button.setEnabled(false);
-
-        ip1.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                button.setEnabled(validate(ip1, button)
-                        && validate(ip2, button)
-                        && validate(ip3, button)
-                        && validate(ip4, button));
-            }
-        });
-
-        ip2.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                button.setEnabled(validate(ip1, button)
-                        && validate(ip2, button)
-                        && validate(ip3, button)
-                        && validate(ip4, button));
-            }
-        });
-
-        ip3.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                button.setEnabled(validate(ip1, button)
-                        && validate(ip2, button)
-                        && validate(ip3, button)
-                        && validate(ip4, button));
-            }
-        });
-
-        ip4.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                button.setEnabled(validate(ip1, button)
-                        && validate(ip2, button)
-                        && validate(ip3, button)
-                        && validate(ip4, button));
-            }
-        });
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        button.setOnClickListener(view -> {
+            System.out.println(getIP());
+            if (validate(getIP()))
                 buttonPress(view);
-            }
+            else Toast.makeText(this, "Wrong IP address!", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -170,14 +86,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public boolean validate(EditText editText, Button button) {
-        if (editText.getText().toString().length() == 0
-                || Integer.parseInt(editText.getText().toString()) < 0
-                || Integer.parseInt(editText.getText().toString()) > 255) {
-            editText.setError("Bad value!");
-            return false;
-        }
+    private boolean validate(String ipAddress) {
+        Pattern pattern = Pattern.compile("^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)(\\.(?!$)|$)){4}");
+        Matcher matcher = pattern.matcher(ipAddress);
 
-        return true;
+        return matcher.matches();
     }
 }
